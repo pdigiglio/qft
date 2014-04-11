@@ -1,4 +1,5 @@
 # Compiler output files
+*.toc
 *.aux
 *.idx
 *.out
