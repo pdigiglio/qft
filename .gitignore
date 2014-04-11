@@ -1,0 +1,8 @@
+# Compiler output files
+*.aux
+*.idx
+*.out
+*.run.xml
+*-blx.bib
+*.log
+*.pdf
