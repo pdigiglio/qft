@@ -410,6 +410,22 @@
 
 \begin{document}
 
-\maketitle
+\frontmatter
+
+	\pdfbookmark[0]{Title}{chap:title}
+	\maketitle
+
+	\thispagestyle{empty}
+
+	\cleardoublepage
+	\pdfbookmark[0]{\contentsname}{chap:toc}
+	\tableofcontents
+
+	\cleardoublepage
+	\input{miscellanea/acronyms}
+
+\mainmatter
+
+\backmatter
 
 \end{document}
