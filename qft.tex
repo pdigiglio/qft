@@ -1,0 +1,415 @@
+\documentclass[
+	10pt
+]{scrbook}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian,german,english]{babel}
+
+
+%\usepackage{showkeys}%,showidx}
+
+\usepackage{scrhack}	% avoid warnings from floating objects
+
+\usepackage[%
+	tracking=true,%
+	babel=true%
+]{microtype}
+% better \marginpar{}
+\usepackage{mparhack}
+\usepackage{fixltx2e,relsize}
+\usepackage{indentfirst}
+
+%\usepackage{empheq}
+%\newcommand*\mygraybox[1]{%
+%\colorbox{lightgray}{#1}}
+
+% Graffiti as in GKP's book "Concrete Mathematics"
+% thanks to Lorenzo Pantieri and Enrico Gregorio
+\def\graffito@setup{%
+   \slshape\footnotesize%
+   \parindent=0pt \lineskip=0pt \lineskiplimit=0pt %
+   \tolerance=2000 \hyphenpenalty=300 \exhyphenpenalty=300%
+   \doublehyphendemerits=100000%
+   \finalhyphendemerits=\doublehyphendemerits}
+%\DeclareRobustCommand{\graffito}[1]{\marginpar%
+% [\graffito@setup\raggedleft\hspace{0pt}{#1}]%
+% {\graffito@setup\raggedright\hspace{0pt}{#1}}}
+\let\oldmarginpar\marginpar
+\renewcommand{\marginpar}[1]{\oldmarginpar%
+ [\graffito@setup\raggedleft\hspace{0pt}{#1}]%
+ {\graffito@setup\raggedright\hspace{0pt}{#1}}}
+
+
+\renewcommand{\sfdefault}{iwona}
+\renewcommand{\ttdefault}{pcr} % Courier family fonts
+
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{MyMathDef}
+
+\usepackage{siunitx}
+\sisetup{
+%	range-phrase=$-$,
+	separate-uncertainty,
+%	input-decimal-marker={.},
+	output-decimal-marker={,},
+	exponent-product = \cdot,
+}
+
+\usepackage{%
+	subfig,%
+	wrapfig%
+}
+
+\usepackage{pgfplots,tikz,tikz-3dplot}%,ifthen}
+\tikzset{
+	>=stealth,
+	spin_up/.append style= {
+		circle,%
+		inner sep=2pt,
+		shading=ball,%
+		ball color=black!80,%
+	},
+	spin_down/.append style= {
+		circle,%
+		inner sep=2pt,
+		shading=ball,%
+		ball color=black!20,%
+	},
+}
+\usetikzlibrary{
+	arrows,%
+	patterns,%
+	calc
+}
+\usepgfplotslibrary{
+	units,%
+	dateplot,%
+	external % "esternalizzo" i grafici per evitare errori memoria
+} 
+%\tikzexternaldisable
+%\tikzexternalize
+%	external/named only=true,
+%	external/prefix=tikz/,
+\pgfplotsset{
+	compat = {1.8},
+%	log basis y=10, % specifica la base con cui calcolare il logaritmo (lasciato vuoto -> $\eu$)
+%	log base 10 number format code/.code={\ensuremath{\eu^{\pgfmathprintnumber{#1}}}},
+	every axis/.append style={
+		width = .77\columnwidth,
+		error bars/y dir=both,
+		error bars/y explicit,
+		error bars/x dir=both,
+		error bars/x explicit,
+%		samples =100,
+%		axis lines = middle, % sistema i grafici 3d prima di decommentare 
+		axis line style={
+			color = black!50,
+		},
+		every axis label/.append style ={
+			color = black!80,
+		},
+		ylabel style = {
+			sloped,
+%			rotate=90,
+%			anchor=near ticklabel,
+		},
+		xlabel style = {sloped},
+		zlabel style = {sloped},
+		every tick label/.append style={
+			color = black!60,
+		},
+		mark size=.3pt,
+%		scaled ticks=base 10:-11, %mette * 10 ^{-11} agli assi
+		grid = major,
+		grid style = {
+			dotted,
+			color = gray!40
+		},
+		legend style = {
+			shade,
+%			draw = none,
+			bottom color = gray!10,
+			top color = white,
+			anchor = north % west
+		},
+		enlargelimits = .05
+	},
+	% imposto delle opzioni per i grafici
+	cycle list={
+		{%
+			solid, line width=.8pt,
+			color=blue!70,
+			opacity=.8,
+			mark=*,
+			mark options={%
+				scale=3,
+				fill=yellow!80!blue,
+				draw=blue!60
+			},
+			error bars/error bar style={
+				blue!100,
+				opacity = .85,
+			}
+		},
+		{%
+			line width=.8pt,
+			color=orange!100,
+			opacity=.8,
+			mark=square*,
+			mark options={%
+				scale=3,
+				fill=gray!80!orange,
+				draw=red!100
+			},
+			error bars/error bar style={
+				red!100,
+				solid,
+				opacity = .85
+			}
+		},
+		{%
+			line width=.8pt,
+			color=green!60,
+			opacity=.8,
+			mark=triangle*,
+			mark options={%
+				scale=3,
+				fill=green!30!blue,
+				opacity=.2,
+				draw=green!100
+			},
+			error bars/error bar style={
+				PineGreen!100,
+				solid,
+				opacity = .85
+			}
+		},
+	},
+%	every pin/.append style={
+%		font=\footnotesize
+%	},
+}
+% tabelle 
+\usepackage{pgfplotstable}
+\usepackage{longtable,rotating}
+\usepgflibrary{fpu}
+\usepackage{booktabs, array, colortbl} % raccomandati per pgfplotstable
+\pgfplotstableset{
+%	col sep=tab, % le colonne sono separate da una tabulazione
+	trim cells=true, % toglie eventuali spazi bianchi
+	row sep=newline, % separatore per le righe
+	header=false, % le colonne non hanno header
+	format=file, % l'argomento è sempre un file di testo
+	1000 sep in fractionals=true, % raggruppa le cifre decimali in gruppi da tre
+	numeric type,
+%	font={\small},
+	empty cells with={--}, % replace empty cells with '--'
+	every even row/.style={
+		before row={\rowcolor[gray]{0.92}}
+	},
+	every head row/.style={
+		before row=\toprule,
+		after row=\midrule
+	},
+	every last row/.style={
+		after row=\bottomrule
+	},
+	set decimal separator={,},
+	set thousands separator={\,}
+}
+
+%\definecolor{halfgray}{gray}{0.55} % chapter numbers will be semi transparent .5 .55 .6 .0
+\definecolor{webgreen}{rgb}{0,.5,0}
+\definecolor{webbrown}{rgb}{.6,0,0}
+\definecolor{Maroon}{cmyk}{0, 0.87, 0.68, 0.32}
+\definecolor{RoyalBlue}{cmyk}{1, 0.50, 0, 0}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Indice Analitico
+%==========
+%
+\usepackage{makeidx, multicol}
+\makeindex
+%%
+\let\orgtheindex\theindex
+\let\orgendtheindex\endtheindex
+\def\theindex{%
+	\def\twocolumn{\begin{multicols}{2}}%
+	\def\onecolumn{}%
+	\clearpage
+	\orgtheindex
+}
+\def\endtheindex{%
+	\end{multicols}%
+	\orgendtheindex
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Definisco il sommario nella classe scrbook.cls
+%==========
+%
+\usepackage{fancyhdr}
+\newcommand{\fncyblank}{\fancyhf{}}
+\newenvironment{abstract}%
+{\cleardoublepage\fncyblank\null\vfill\begin{center}%
+\bfseries\abstractname\end{center}}%
+{\vfill\null}
+%
+\newenvironment{abstractdoppio}% 
+{\null \vfill \begin{center}% 
+\bfseries \abstractname \end{center}}% 
+{\vfill \null}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Con 'openright' è possibile avere una pagina bianca a fine capitolo; 
+% per evitare che in questa pagina siano presenti testatine o piè di pagina:
+%==========
+%
+\makeatletter
+\def\cleardoublepage{\clearpage\if@twoside
+\ifodd\c@page
+\else\hbox{}\thispagestyle{empty}\newpage
+\if@twocolumn\hbox{}\newpage\fi\fi\fi}
+\makeatother
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% bibliografia
+%=========
+%
+\usepackage[%
+	autostyle,
+	italian=guillemets,%
+]{csquotes}
+\usepackage[%
+	style=numeric-comp,%
+	useprefix,%
+	hyperref,%
+	backref,%
+	backend=bibtex%
+]{biblatex}
+\addbibresource{bibliografia.bib}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Didascalie
+%=========
+%
+\usepackage{caption}
+\captionsetup{%
+	format=hang,%
+	font=small,%
+	labelfont={%
+		color=darkgray,%
+		sf, bf%
+	}%
+}
+\captionsetup[table]{%
+%	skip=\medskipamount,%
+%	position = top%
+}
+\captionsetup[figure]{%
+%	skip=\medskipamount,
+	position = bottom%
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Acronimi
+%=========
+%
+\usepackage[
+%	printonlyused,%
+	smaller,%
+%	withpage,%
+%	footnote
+]{acronym}
+% descrizioni degli acronimi giustificate
+\makeatletter
+\def\bflabel#1{{\textbf{\textsf{#1}}\hfill}}
+\renewenvironment{AC@deflist}[1]%
+{\ifAC@nolist%
+\else%
+\begin{list}{}%
+{\settowidth{\labelwidth}{\textbf{\textsf{#1}}}%
+\setlength{\leftmargin}{\labelwidth}%
+\addtolength{\leftmargin}{\labelsep}%
+\renewcommand{\makelabel}{\bflabel}}%
+\fi}%
+{\ifAC@nolist%
+\else%
+\end{list}%
+\fi}%
+\makeatother
+%
+\usepackage{relsize}
+\renewcommand*{\acsfont}[1]{\textsmaller{\sf{#1}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\eu}{\ensuremath{\mathrm{e}}}% costante eulero
+\newcommand{\iu}{\ensuremath{\mathrm{i}}}%unità immaginaria
+\newcommand{\deriv}[3][]{\dfrac{\ud^{#1}#2}{\ud #3^{#1}}}% derivata totale - notazione leibniz
+\newcommand{\pderiv}[3][]{\dfrac{\de^{#1}#2}{\de #3^{#1}}}% derivata parziale - notazione leibniz
+\newcommand{\op}[1]{\ensuremath{\hat #1}}
+\newcommand{\adj}[1]{\ensuremath{\op{#1}^\dag}}
+% matrice trasposta
+\newcommand{\ltrans}[1]{{\vphantom{#1}}^{\textup{t}}{#1}}
+\DeclareMathOperator{\var}{var}
+\newcommand{\lang}[1]{\textsf{#1}}
+
+%numero di misure
+\newcommand{\msr}{2e6}
+\newcommand{\Msr}{7.5e5}
+
+% abilita la ricerca di ° a documento finito
+\usepackage{textcomp}
+
+%\usepackage{pgfpages}
+%\pgfpagesuselayout{2 on 1}[
+%	a4paper,%
+%	border shrink=1mm,
+%	landscape%
+%]
+
+\usepackage{hyperref}
+\hypersetup{
+%	draft,
+	final,
+	colorlinks=true,
+	linktocpage=true,
+	pdfstartpage=3,
+	pdfstartview=FitV,
+	breaklinks=true,
+	pdfpagemode=UseNone,
+	pageanchor=true,
+	pdfpagemode=UseOutlines,%
+	plainpages=false,
+	bookmarksnumbered,
+	bookmarksopen=true,
+	bookmarksopenlevel=1,%
+	hypertexnames=true,
+	pdfhighlight=/O,
+	urlcolor=webbrown,
+	linkcolor=RoyalBlue,
+	citecolor=webgreen,
+%	pagecolor=RoyalBlue,%
+}
+
+% definisco lo spazio per il testo
+%\areaset[current]{\textwidth}{691pt}
+
+% spaziatura europea dopo il punto
+\frenchspacing
+% frequenza di divisione in sillabe (default=100)
+% numero più piccolo -> sillabazione più frequente
+\pretolerance=2
+
+\title{\input{TITLE}}
+\subtitle{\input{SUBTITLE}}
+\author{\input{AUTHORS}}
+\date{\small\sf\today{}}
+
+\begin{document}
+
+\maketitle
+
+\end{document}
